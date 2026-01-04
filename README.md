@@ -1,43 +1,124 @@
-# Team 4 Final Application
+# ISM6225 Final Application – Group 4
+## Project Description
 
-## API endpoints used
-- Base URL: https://api.eia.gov/v2/ 
-- Path: `nuclear-outages/generator-nuclear-outages/data/`
-- Query Parameters:
-    ```
-    frequency=daily
-    data[0]=capacity&data[1]=outage&data[2]=percentOutage
-    sort[0][column]=period&sort[0][direction]=desc
-    offset=0&length=5000
-    api_key={YOUR_API_KEY}
-    ```
+**Nuclear Outage Monitor:** Live Nuclear Plant Outage Data & Visualization is an MVC-based web application developed for the ISM6225 Application Development final project. The application retrieves and visualizes real-time nuclear power plant outage data from the U.S. Energy Information Administration (EIA).
 
-Putting it all together:
+The primary goal of this project is to demonstrate Team 4’s proficiency in C#/.NET MVC architecture, API integration, and JavaScript-based data visualization, while delivering a functional, user-friendly interface for exploring outage trends and capacity impacts across U.S. nuclear facilities.
 
-`https://api.eia.gov/v2/nuclear-outages/generator-nuclear-outages/data/?frequency=daily&data[0]=capacity&data[1]=outage&data[2]=percentOutage&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000&api_key=YOUR_API_KEY`
+**URL to Site:** https://appdevgroup4-c2evc9avbnfvc6d0.eastus2-01.azurewebsites.net/
 
-Key Components
-- Base URL: The root URL for the EIA's API.  It's the foundation for accessing any of their data services.   
-- API Key: A unique key `(10Cb31KivaDpOJGrdIbAq8gUsF2Mq0kNMWQQzygT)` is used to authenticate requests to the EIA API. You will need to obtain your own API key from the EIA to use the API.   
-- EIA: The U.S. Energy Information Administration (EIA) is a principal agency of the U.S. Federal Statistical System responsible for collecting, analyzing, and disseminating energy information to support public policy-making, efficient markets, and public understanding of energy and its interaction with the economy and the environment.
+## Key Features
+1. **Live Data Integration**
+	* Pulls daily nuclear outage data directly from the EIA public API
+	* Displays outage capacity, outage amount, and percentage outage metrics
+	* Automatically retrieves the most recent records using server-side API calls
+2. **Interactive Data Visualization**
+	* JavaScript-powered charts to visualize outage trends over time
+	* Dynamically updates based on API responses
+	* Designed to support rapid interpretation of operational impact
+3. **Full CRUD Functionality**
+	* Users can create, read, update, and delete outage records
+	* Structured workflow with confirmation steps to prevent accidental data loss
+4. **MVC Architecture**
+	* Clear separation of concerns across Models, Views, and Controllers
+	* Service-based API access for maintainability and scalability
 
-## Data model (updated ERD diagram)
+## API Integration
+**API Endpoint**
+
+* Base URL:
+https://api.eia.gov/v2/
+* Resource Path:
+`nuclear-outages/generator-nuclear-outages/data/`
+
+### Query Parameters
+```
+frequency=daily
+data[0]=capacity
+data[1]=outage
+data[2]=percentOutage
+sort[0][column]=period
+sort[0][direction]=desc
+offset=0
+length=5000
+api_key=YOUR_API_KEY
+```
+
+### Full Example Request
+https://api.eia.gov/v2/nuclear-outages/generator-nuclear-outages/data/?frequency=daily&data[0]=capacity&data[1]=outage&data[2]=percentOutage&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000&api_key=YOUR_API_KEY
+
+### Key API Components
+* **Base URL:** Entry point for all EIA data services
+* **API Key:** Required for authentication (users must generate their own via EIA)
+* **EIA (Energy Information Administration):** A U.S. federal agency responsible for collecting and publishing energy data to support policy decisions, market efficiency, and public understanding
+
+## Data Model
+**Updated ERD Diagram**
 ![Updated ERD for Group 4 Project](https://raw.githubusercontent.com/m-bermudez/ISM6225-Dynamic-Web-App-Final-Project/refs/heads/main/OutagesERD.png)
-## Overview of CRUD implementation
-Our CRUD functionality was inspired by design patterns observed in the data.gov repository, emphasizing clarity and usability.
-- Read: The Read page displays all outage records in a structured, scrollable layout.
-- Create: A "Create" button redirects users to a dedicated form page where they can input and submit new outage records.
-- Update: Each record includes an "Edit" button that leads to a separate page pre-filled with that record’s data, allowing users to make changes and update it.
-- Delete: The "Delete" button takes users to a confirmation page, ensuring they intentionally want to remove the selected record before finalizing the action.
 
-## Notable technical challenges and solutions
-- Setting up the singleton service proved to be harder than we anticipated, but the solution was far simpler than we thought
-    - The solution was simply just setting the Program.cs file to have this code: `builder.Services.AddSingleton<NuclearOutageService>();`
+The data model was refined to support outage metrics, timestamps, and plant-level attributes while ensuring relational consistency across entities.
 
-- Data Visualization charts not functioning correctly due to API
-    - Solution was posted above with the API
+## CRUD Implementation Overview
 
-- About Us page
-    - Another challenge involved displaying the "Role and Contributions" section in a symmetrical and organized manner. 
-    - To solve this, we used Copilot on Visual Studio to explore layout recommendations and best practices. One useful suggestion was to apply a margin-bottom property to the role-related CSS class, which helped ensure horizontal symmetry within the containing div. 
-    - Additionally, since the contribution details varied between team members, we implemented a flexible layout using the member-info class. This included dynamic spacing and the addition of margin-top properties to the contribution list elements, allowing for consistent spacing and visual alignment across all entries. 
+The CRUD workflow was inspired by design conventions observed in the data.gov repository, with a focus on clarity and usability.
+
+* **Read:** Displays all outage records in a structured, scrollable layout for easy review.
+* **Create:** A dedicated Create page allows users to enter and submit new outage records via a form interface.
+* **Update:** Each record includes an Edit button that opens a pre-populated form, allowing users to modify existing data.
+* **Delete:** The Delete action routes users to a confirmation page to ensure intentional removal of records.
+
+
+
+## Notable Technical Challenges & Solutions
+1) Singleton Service Configuration
+* Challenge: Properly configuring a shared service for API access
+* Solution: Registering the service as a singleton in Program.cs:
+```csharp
+builder.Services.AddSingleton<NuclearOutageService>();
+```
+*This ensured efficient reuse of API resources and consistent data access across controllers.*
+
+2) Data Visualization Issues
+* Challenge: Initial chart failures caused by incorrect API data handling
+* Solution: Refinement of API query parameters and response parsing, as outlined in the API section above
+3) “About Us” Page Layout & Symmetry
+* Challenge: Maintaining consistent alignment and spacing across varying team member content
+* Solution:
+	* Leveraged GitHub Copilot within Visual Studio to explore layout best practices
+	* Applied `margin-bottom` styling to role-related CSS classes for horizontal symmetry
+	* Implemented a flexible `member-info` layout with dynamic spacing and `margin-top` adjustments for contribution lists
+
+*This approach ensured visual consistency despite differences in content length.*
+## Team Member Contributions
+
+* **Alvaro Montoya Ruiz** *(Frontend Developer / Managerial)*
+Led front-end development efforts and supported project management coordination. Assigned and tracked tasks using JIRA, developed the About Us page, and implemented dynamic CRUD page functionality. Improved overall user experience through targeted UI refinements and styling updates. Conducted deployment testing and quality assurance to ensure application stability and correctness. Contributed extensively to layout structure and shared CSS resources.
+
+* **Mauricio Bermudez** *(Full-Stack Developer / Managerial)*
+Designed and implemented the data visualization layer using Chart.js, integrating live nuclear outage data from the EIA API. Built MVC controllers and managed database logic to support application functionality. Assisted with task assignment and tracking through JIRA. Performed post-deployment testing and quality assurance to validate data accuracy and application reliability. Contributed to visualization components, layout structure, and shared CSS files.
+
+* **Marta Falceto** *(Frontend Developer / Content Creator)*
+Developed the application’s Home page and CRUD pages, ensuring consistency and usability across views. Created content and supporting materials for the group project presentation. Enhanced the user interface through iterative design refinements and styling improvements. Participated in deployment testing and quality assurance efforts. Contributed to Home and CRUD views, layout templates, and shared CSS resources.
+
+* **Ryan Stopczynski** *(Data Integration Engineer)*
+Designed the logical data model and led API integration efforts, fetching and processing live data from external sources. Implemented a singleton database pattern and utilized Data Transfer Objects (DTOs) to improve data flow efficiency. Conducted deployment testing and quality assurance to validate system performance and correctness. Contributed to Home views, layout structure, and shared CSS files.
+
+## Technologies Used
+* Backend:
+	* C#
+	* ASP.NET MVC
+* Frontend:
+	* JavaScript
+	* HTML / CSS
+* Data & APIs:
+	* EIA Public API
+* Development Tools:
+	* Visual Studio
+	* GitHub
+	* GitHub Copilot
+
+## Future Enhancements
+1. Expand visualization options to support filtering by plant or region
+2. Add pagination or lazy loading for large outage datasets
+3. Improve UI responsiveness for mobile and tablet devices
+4. Implement caching to reduce redundant API calls
